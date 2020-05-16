@@ -40,36 +40,27 @@ module.exports = {
       use: ['babel-loader', 'eslint-loader'],
       exclude: '/node_modules/',
     }, {
-      test: /\.(png|jpg|gif|svg)$/,
+      test: /\.(png|jpg|gif|svg|webp)$/,
       loader: 'file-loader',
       options: {
         name: '[name].[ext]',
       },
-    }, {
+    },{
       test: /\.scss$/,
       use: [
         'style-loader',
         MiniCssExtractPlugin.loader,
         {
           loader: 'css-loader',
-          options: {
-            sourceMap: true,
-          },
+          options: { sourceMap: true },
         },
         {
           loader: 'postcss-loader',
-          options: {
-            sourceMap: true,
-            config: {
-              path: './build/postcss.config.js',
-            },
-          },
+          options: { sourceMap: true, config: { path: './build/postcss.config.js' } },
         },
         {
           loader: 'sass-loader',
-          options: {
-            sourceMap: true,
-          },
+          options: { sourceMap: true },
         },
       ],
     }, {
@@ -79,17 +70,10 @@ module.exports = {
         MiniCssExtractPlugin.loader,
         {
           loader: 'css-loader',
-          options: {
-            sourceMap: true,
-          },
+          options: { sourceMap: true },
         }, {
           loader: 'postcss-loader',
-          options: {
-            sourceMap: true,
-            config: {
-              path: './postcss.config.js',
-            },
-          },
+          options: { sourceMap: true, config: { path: './build/postcss.config.js' } },
         },
       ],
     }],
