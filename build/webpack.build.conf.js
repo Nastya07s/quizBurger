@@ -4,6 +4,9 @@ const baseWebpackConfig = require('./webpack.base.conf');
 
 const buildWebpackConfig = merge(baseWebpackConfig, {
   mode: 'production',
+  output: {
+    publicPath: 'https://nastya07s.github.io/quizBurger/',
+  },
   plugins: [],
 });
 

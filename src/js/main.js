@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const prevBtn = document.getElementById('prev');
   const nextBtn = document.getElementById('next');
 
+  const modalDialog = document.querySelector('.modal-dialog');
+
   const questions = [
     {
       question: 'Какого цвета бургер?',
@@ -92,12 +94,22 @@ document.addEventListener('DOMContentLoaded', () => {
     burgerBtn.style.display = clientWidth < 768 ? 'flex' : 'none';
   });
 
+  let count = -100;
+
+  const animateModal = () => {
+    modalDialog.style.top = `${count}%`;
+    count += 3;
+
+    if (count < 0) requestAnimationFrame(animateModal);
+    else count = -100;
+  };
+
   const playTest = () => {
     let numberQuestion = 0;
     const renderAnswers = (index) => {
       questions[index].answers.forEach(({ title, url }) => {
         const answerItem = document.createElement('div');
-        answerItem.classList.add('answers-item', 'd-flex', 'flex-column');
+        answerItem.classList.add('answers-item', 'd-flex', 'justify-content-center');
         answerItem.innerHTML = `
           <input type="${questions[index].type}" id="${title}" name="answer" class="d-none">
           <label for="${title}" class="d-flex flex-column justify-content-between">
@@ -140,6 +152,8 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   btnOpenModal.addEventListener('click', () => {
+    requestAnimationFrame(animateModal);
+
     modalBlock.classList.add('d-block');
 
     playTest();
