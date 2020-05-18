@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const sendBtn = document.getElementById('send');
 
   const modalDialog = document.querySelector('.modal-dialog');
+  const modalTitle = document.querySelector('.modal-title');
 
   const questions = [
     {
@@ -108,6 +109,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const playTest = () => {
     let numberQuestion = 0;
     const finalAnswers = [];
+    const obj = {};
+
+    modalTitle.textContent = 'Ответь на вопросы:';
 
     const renderAnswers = (index) => {
       questions[index].answers.forEach(({ title, url }) => {
@@ -126,6 +130,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const renderQuestions = (indexQuestion) => {
       formAnswers.innerHTML = '';
+      let numberPhone;
 
       switch (true) {
         case (numberQuestion === 0):
@@ -138,19 +143,38 @@ document.addEventListener('DOMContentLoaded', () => {
           renderAnswers(indexQuestion);
           break;
         case (numberQuestion === questions.length):
-          questionTitle.textContent = 'Enter your number';
+          questionTitle.textContent = 'Введите ваш номер телефона';
+          modalTitle.textContent = '';
+
           nextBtn.classList.add('d-none');
           prevBtn.classList.add('d-none');
           sendBtn.classList.remove('d-none');
+
           formAnswers.innerHTML = `
-          <div class="form-group">
+          <div class-="form-group">
             <label for="numderPhone"></label>
-            <input type="password" class="form-control" id="numberPhone" placeholder="Your number" autocomplete="off">
+            <input type="phone" class="form-control" id="numberPhone" placeholder="Your number" autocomplete="off" pattern="[0-9+-]">
           </div>
           `;
+
+          numberPhone = document.getElementById('numberPhone');
+
+          numberPhone.addEventListener('input', ({ target }) => {
+            numberPhone.value = target.value.replace(/[^0-9+-]/, '');
+          });
           break;
         case (numberQuestion > questions.length):
           questionTitle.textContent = 'Спасибо за пройденный тест';
+          sendBtn.classList.add('d-none');
+
+          Object.keys(obj).forEach((key) => {
+            const newObj = {};
+            newObj[key] = obj[key];
+            finalAnswers.push(newObj);
+          });
+
+          console.log(finalAnswers);
+
           setTimeout(() => {
             modalBlock.classList.remove('d-block');
           }, 3000);
@@ -170,12 +194,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderQuestions(numberQuestion);
 
     const checkAnswer = () => {
-      const obj = {};
       const inpunts = [...formAnswers.elements].filter((el) => el.checked || el.id === 'numberPhone');
 
       inpunts.forEach((input, i) => {
         if (numberQuestion >= 0 && numberQuestion <= questions.length - 1) {
-          obj[`${i}_${questions[numberQuestion.querySelector]}`] = input.value;
+          obj[`${i}_${questions[numberQuestion].question}`] = input.value;
         }
 
         if (numberQuestion === questions.length) {
@@ -183,7 +206,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
 
-      finalAnswers.push(obj);
+      // finalAnswers.push(obj);
     };
 
     nextBtn.onclick = () => {
