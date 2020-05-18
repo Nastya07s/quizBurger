@@ -127,35 +127,43 @@ document.addEventListener('DOMContentLoaded', () => {
     const renderQuestions = (indexQuestion) => {
       formAnswers.innerHTML = '';
 
-      if (numberQuestion >= 0 && numberQuestion <= questions.length - 1) {
-        questionTitle.textContent = `${questions[indexQuestion].question}`;
+      switch (true) {
+        case (numberQuestion === 0):
+          questionTitle.textContent = `${questions[indexQuestion].question}`;
 
-        nextBtn.classList.remove('d-none');
-        prevBtn.classList.remove('d-none');
-        sendBtn.classList.add('d-none');
+          nextBtn.classList.remove('d-none');
+          prevBtn.classList.add('d-none');
+          sendBtn.classList.add('d-none');
 
-        renderAnswers(indexQuestion);
-      }
+          renderAnswers(indexQuestion);
+          break;
+        case (numberQuestion === questions.length):
+          questionTitle.textContent = 'Enter your number';
+          nextBtn.classList.add('d-none');
+          prevBtn.classList.add('d-none');
+          sendBtn.classList.remove('d-none');
+          formAnswers.innerHTML = `
+          <div class="form-group">
+            <label for="numderPhone"></label>
+            <input type="password" class="form-control" id="numberPhone" placeholder="Your number" autocomplete="off">
+          </div>
+          `;
+          break;
+        case (numberQuestion > questions.length):
+          questionTitle.textContent = 'Спасибо за пройденный тест';
+          setTimeout(() => {
+            modalBlock.classList.remove('d-block');
+          }, 3000);
+          break;
+        default:
+          questionTitle.textContent = `${questions[indexQuestion].question}`;
 
-      if (numberQuestion === 0) prevBtn.classList.add('d-none');
+          nextBtn.classList.remove('d-none');
+          prevBtn.classList.remove('d-none');
+          sendBtn.classList.add('d-none');
 
-      if (numberQuestion === questions.length) {
-        nextBtn.classList.add('d-none');
-        prevBtn.classList.add('d-none');
-        sendBtn.classList.remove('d-none');
-        formAnswers.innerHTML = `
-        <div class="form-group">
-          <label for="numderPhone">Enter your number</label>
-          <input type="password" class="form-control" id="numberPhone" placeholder="Enter your number here" autocomplete="off">
-        </div>
-        `;
-      }
-
-      if (numberQuestion === questions.length + 1) {
-        formAnswers.textContent = 'Спасибо за пройденный тест';
-        setTimeout(() => {
-          modalBlock.classList.remove('d-block');
-        }, 5000);
+          renderAnswers(indexQuestion);
+          break;
       }
     };
 
