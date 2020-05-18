@@ -1,3 +1,4 @@
+/* global firebase */
 document.addEventListener('DOMContentLoaded', () => {
   const btnOpenModal = document.getElementById('btnOpenModal');
   const modalBlock = document.getElementById('modalBlock');
@@ -12,80 +13,20 @@ document.addEventListener('DOMContentLoaded', () => {
   const modalDialog = document.querySelector('.modal-dialog');
   const modalTitle = document.querySelector('.modal-title');
 
-  const questions = [
-    {
-      question: 'Какого цвета бургер?',
-      answers: [
-        {
-          title: 'Стандарт',
-          url: './assets/img/burger.png',
-        },
-        {
-          title: 'Черный',
-          url: './assets/img/burgerBlack.png',
-        },
-      ],
-      type: 'radio',
-    },
-    {
-      question: 'Из какого мяса котлета?',
-      answers: [
-        {
-          title: 'Курица',
-          url: './assets/img/chickenMeat.png',
-        },
-        {
-          title: 'Говядина',
-          url: './assets/img/beefMeat.png',
-        },
-        {
-          title: 'Свинина',
-          url: './assets/img/porkMeat.png',
-        },
-      ],
-      type: 'radio',
-    },
-    {
-      question: 'Дополнительные ингредиенты?',
-      answers: [
-        {
-          title: 'Помидор',
-          url: './assets/img/tomato.png',
-        },
-        {
-          title: 'Огурец',
-          url: './assets/img/cucumber.png',
-        },
-        {
-          title: 'Салат',
-          url: './assets/img/salad.png',
-        },
-        {
-          title: 'Лук',
-          url: './assets/img/onion.png',
-        },
-      ],
-      type: 'checkbox',
-    },
-    {
-      question: 'Добавить соус?',
-      answers: [
-        {
-          title: 'Чесночный',
-          url: './assets/img/sauce1.png',
-        },
-        {
-          title: 'Томатный',
-          url: './assets/img/sauce2.png',
-        },
-        {
-          title: 'Горчичный',
-          url: './assets/img/sauce3.png',
-        },
-      ],
-      type: 'radio',
-    },
-  ];
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: 'AIzaSyCODMCSrbOMqrUbY7QoMVBXhQ47Yf1d_ic',
+    authDomain: 'quizburger-2db56.firebaseapp.com',
+    databaseURL: 'https://quizburger-2db56.firebaseio.com',
+    projectId: 'quizburger-2db56',
+    storageBucket: 'quizburger-2db56.appspot.com',
+    messagingSenderId: '540657852979',
+    appId: '1:540657852979:web:4248b456dd571250323946',
+    measurementId: 'G-ND2VM9F5L1',
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
 
   let { clientWidth } = document.documentElement;
   burgerBtn.style.display = clientWidth < 768 ? 'flex' : 'none';
@@ -106,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
     else count = -100;
   };
 
-  const playTest = () => {
+  const playTest = (questions) => {
     let numberQuestion = 0;
     const finalAnswers = [];
     const obj = {};
@@ -173,8 +114,6 @@ document.addEventListener('DOMContentLoaded', () => {
             finalAnswers.push(newObj);
           });
 
-          console.log(finalAnswers);
-
           setTimeout(() => {
             modalBlock.classList.remove('d-block');
           }, 3000);
@@ -205,8 +144,6 @@ document.addEventListener('DOMContentLoaded', () => {
           obj['Номер телефона'] = input.value;
         }
       });
-
-      // finalAnswers.push(obj);
     };
 
     nextBtn.onclick = () => {
@@ -224,7 +161,18 @@ document.addEventListener('DOMContentLoaded', () => {
       checkAnswer();
       numberQuestion += 1;
       renderQuestions(numberQuestion);
+      firebase.database().ref().child('contacts').push(finalAnswers);
     };
+  };
+
+  const getData = () => {
+    formAnswers.textContent = 'LOAD';
+
+    nextBtn.classList.add('d-none');
+    prevBtn.classList.add('d-none');
+
+    firebase.database().ref().child('questions').once('value')
+      .then((snap) => playTest(snap.val()));
   };
 
   burgerBtn.addEventListener('click', () => {
@@ -239,7 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     modalBlock.classList.add('d-block');
 
-    playTest();
+    getData();
   });
 
   document.body.addEventListener('click', ({ target }) => {
